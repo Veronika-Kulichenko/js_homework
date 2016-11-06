@@ -6,6 +6,7 @@ function start() {
 	str = "Hi, player 2!";
 	console.log(str);
 	var resultOfPlayer_2 = game(str);
+	chooseWinner(resultOfPlayer_1, resultOfPlayer_2);
 }
 
 function game(str) {
