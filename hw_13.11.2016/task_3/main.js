@@ -149,9 +149,3 @@ function getElementsOfTwoArrays(nums, str){
 	console.log(combinedArray);  
 	return combinedArray;
 }
-
-
-// https://learn.javascript.ru/array-iteration
-
-
-
