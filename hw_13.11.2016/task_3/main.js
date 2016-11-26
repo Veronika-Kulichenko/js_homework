@@ -35,7 +35,7 @@ function isEvenTrue(nums){
 	let numsLength = nums.length;
 	let evelNums = [];
 	for(let i = 0; i < numsLength; i++){
-		if(nums[i]%2===0){
+		if(nums[i]%2 === 0){
 			evelNums.push(nums[i]);
 		}
 	} 
