@@ -12,7 +12,7 @@ function removeVowels(string){
    	let newString = string.toLowerCase();
    	let arr = [];
    	for(let i = 0 ; i < newString.length; i++){
-   		arr.push(newString.charAt(i));
+   		arr.push(newString[i]);
    	}
    	console.log(arr);
    	for(let i = arr.length - 1; i  >= 0; i--){
