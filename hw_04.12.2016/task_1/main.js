@@ -55,6 +55,7 @@
 		let seconds = this.getSeconds();
 		currentDate = currentDate.replace("ss", seconds);
 	}
+	return currentDate;
 }
 
 	
