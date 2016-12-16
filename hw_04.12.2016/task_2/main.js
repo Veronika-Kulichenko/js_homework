@@ -41,15 +41,14 @@ let peopleList = fetch(`http://swapi.co/api/people/${numberOfCharacter}`)
 	species = res.species;
 
 	let getFilms = films.map(film => fetch(film).then(res => res.json()));
-	return Promise.all(getFilms).then(res => ({name, films: res, species}));
+	let getSpecies = fetch(species[0]).then(res => res.json());
+	return Promise.all(getFilms).then(res => ({name, films: res, getSpecies}));
 })	
 .then(function(res) {
 	let name = res.name,
 	films = res.films,
-	species = res.species;
-
-	let getSpecies = fetch(species[0]).then(res => res.json());
-	return Promise.all([getSpecies]).then(res => ({name, films, species: res}));
+	species = res.getSpecies;
+	return Promise.all([species]).then(res => ({name, films, species: res}));
 })
 .then(function(res) {
 	let name = res.name,
