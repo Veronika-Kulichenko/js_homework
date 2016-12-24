@@ -13,7 +13,7 @@ function handleClick(ev){
 		let id = ev.target.getAttribute("href");
 		let user = id ? users.find(el => el.id === id) :
 		users.find(el => el.default);
-		document.querySelector("p").textContent = `Name: ${user.name} Last Name: ${user.lastName} Age: ${user.age}`;
+		document.querySelector("p").innerHTML = `Name: ${user.name}` + "<br>" + `Last Name: ${user.lastName}` + "<br>" + `Age: ${user.age}`;
 		history.pushState({user}, "", `${location.origin}/${id}/?name=${user.name}&lastname=${user.lastName}&age=${user.age}`);
 	}
 }
@@ -28,6 +28,6 @@ function changeUser(ev){
 	users.find(el => el.id === userId) :
 	users.find(el => el.default);
 	user[arr[0]] = arr[1];
-	document.querySelector("p").textContent = `Name: ${user.name} Last Name: ${user.lastName} Age: ${user.age}`;
+	document.querySelector("p").innerHTML = `Name: ${user.name}` + "<br>" + `Last Name: ${user.lastName}` + "<br>" + `Age: ${user.age}`;
 	history.pushState({user}, "", `${location.origin}/${userId}/?name=${user.name}&lastname=${user.lastName}&age=${user.age}`);
 }
