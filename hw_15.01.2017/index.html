@@ -1,44 +1,50 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8"> 
-			<title>WebSocket</title>
-			<!-- Latest compiled and minified CSS -->
-			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<head>
+	<meta charset="utf-8"> 
+	<title>WebSocket</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-				<!-- jQuery library -->
-				<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
-				<!-- Latest compiled JavaScript -->
-				<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-			</head>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
 
-			<body style="height:3000px">
+<body style="height:3000px">
 
-				<div class="container" id="prompt-form-container">
-					<div class="card card-container">
-						<img id="profile-img" class="profile-img-card" src="http://janetfouts.com/wp-content/uploads/2011/08/Fotolia_30732541_XS.jpg" />
-						<p id="profile-name" class="profile-name-card"></p>
-						<form class="form-signin" id="prompt-form">
-							<span id="reauth-email" class="reauth-email"></span>
-							<input type="text" id="inputLogin" class="form-control" placeholder="Enter your login" required autofocus>
-							</div>
-							<button class="btn btn-lg btn-primary btn-block btn-signin" type="submit" id="loginBtn">Sign in</button>
-						</form><!-- /form -->
-					</div><!-- /card-container -->
-				</div><!-- /container -->
+	<div class="container" id="prompt-form-container">
+		<div class="card card-container">
+			<img id="profile-img" class="profile-img-card" src="http://janetfouts.com/wp-content/uploads/2011/08/Fotolia_30732541_XS.jpg" />
+			<p id="profile-name" class="profile-name-card"></p>
+			<div class="form-signin" id="prompt-form">
+				<span id="reauth-email" class="reauth-email"></span>
+				<input type="text" id="inputLogin" class="form-control" placeholder="Enter your login" required autofocus>
 			</div>
+			<button class="btn btn-lg btn-primary btn-block btn-signin" type="button" id="loginBtn">Sign in</button>
+		</div><!-- /form -->
+	</div><!-- /card-container -->
+</div><!-- /container -->
+</div>
 
-			<div id="messages-container">
+<div id="messages-container">
 
-			</div>
+</div>
 
+<div id="gifs-container" class="image-container">
+	<a href="#" id="next" class="control_next">>></a>
+	<a href="#" id="prev" class="control_prev"><</a>
 
-			<form action="" id="chat-form">
-				<input type="text" id="chat-message" placeholder="Type your message"><button>Send</button>
-			</form>
-			<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-			<script src="js/main.js"></script>
-			<link rel="stylesheet" type="text/css" href="css/style.css">
-			</body>
-		</html>
+</div>
+
+<form action="" id="chat-form">
+	<input type="text" id="chat-message" placeholder="Type your message"><button>Send</button>
+</form>
+
+<script src="http://localhost:8080/js/socket.io.js"></script>
+<script src="js/main.js"></script>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+</body>
+</html>
