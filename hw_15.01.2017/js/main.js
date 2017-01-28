@@ -1,100 +1,121 @@
-; (function() {
+;(function() {
 	"use strict";
 
-	const ws = io("http://178.62.203.188:8888");
+	var giphyBasic = 'http://api.giphy.com/v1/gifs/';
+	var giphyApiKey = '?api_key=dc6zaTOxFJmzC';
+
+	var ws;
+	let sender;
+	
 	let $messagesContainer = document.getElementById("messages-container");
 
-	const giphyBasic = "http://api.giphy.com/v1/gifs/";
-	const giphyApiKey = "?api_key=dc6zaTOxFJmzC";
+	let $chatFrom = document.getElementById("chat-form"),
+	$chatMessageInput = document.getElementById("chat-message"),
+	$loginForm = document.getElementById("prompt-form-container"),
+	$gifsContainer = document.getElementById("gifs-container");
 
-	let login;
-	document.getElementById('loginBtn').addEventListener('click', loginUser);
+	$chatFrom.addEventListener("submit", onSendMessage);
 
-	var gifCounter = 0;
+	$gifsContainer.addEventListener('click', onSendImage);
 
-	function loginUser(){
-		let loginForm = document.getElementById("prompt-form-container");
-		loginForm.style.visibility = "hidden";
-		login = document.getElementById("inputLogin").value;
-	}
-
-	ws.on("chat message", data => {
-		console.log(data);
-		let $p = document.createElement("p");
-		if(data.messageType === "text") {
-			$p.textContent = data.sender + ": " + data.message;
-			$messagesContainer.appendChild($p);
-		} else if(data.messageType === "image") {
-			let image = fetch(`${giphyBasic}${data.imageId}${giphyApiKey}`).then(res => res.json());
-			Promise.all([image])
-			.then(res => {
-				let $img = document.createElement("img");
-				$img.src = res[0].data.images.fixed_height.url;
-				$p.textContent = data.sender + ": ";
-				$p.appendChild($img);
-				$messagesContainer.appendChild($p);
-			});
-		}
-	});
-
-	let $chatForm = document.getElementById('chat-form');
-	let $chatMessageInput = document.getElementById("chat-message");
-	$chatForm.addEventListener("submit", onSendMessage);
-	let $gifsContainer = document.getElementById("gifs-container");
-
-	loadTrendGifs();
-
-	function onSendMessage(ev){
-		ev.preventDefault();
+	function onSendMessage(event) {
+		event.preventDefault();
+		if(!$chatMessageInput.value) return;
 		let message = $chatMessageInput.value.trim();
 		if(!message) return;
-		let sender = login;
-		ws.emit("chat message", { sender, messageType: "text", message });
+
 		$chatMessageInput.value = "";
+		ws.emit("chat message" , {name: sender, message, type: 'TEXT'});
 	}
 
-	function loadTrendGifs() {
-		let images = fetch(`${giphyBasic}trending${giphyApiKey}`).then(res => res.json());
+	document.getElementById("loginBtn").addEventListener("click", onLogin);
 
-		return Promise.all([images])
-		.then(res => {
-			let images = res[0].data;
+	function onLogin(event) {
+		event.preventDefault();
 
-			images.forEach(i => {
-				let $spanEl = document.createElement("span");
+		sender = document.getElementById("login").value;
+		if(!sender || sender.length > 30) return;
 
-				let $img = document.createElement("img");
+		$loginForm.hidden = true;
 
-				$img.src = i.images.fixed_height.url;
-				$img.data = i.id;
+		ws = io("http://178.62.203.188:8888");
 
-				$img.onclick = sendImage;
+		ws.on("chat message", data => onMessage(data));
 
-				$spanEl.appendChild($img);
-				$gifsContainer.appendChild($spanEl);
+		let sendBtn = document.getElementById("sendBtn");
+		
+		sendBtn.disabled = false;
+		$chatMessageInput.disabled = false;
+		$chatFrom.hidden = false;
+
+		// document.querySelector('.chat-container').style = 'justify-content: space-between';
+	}
+
+	function onMessage(data) {
+		console.log(data);
+		let $p = document.createElement("p");
+		if(data.type === 'TEXT' && data.name) {
+			$p.setAttribute('data-name', data.name);
+			$p.textContent = data.message; 
+			$messagesContainer.appendChild($p);
+		} else if(data.type === 'IMAGE') {
+			
+			let url = fetch(data.message)
+			.then(res => res.json())
+			.then(res => {
+				return res.data.images.fixed_height.url;
 			});
 
+			return Promise.all([url])
+			.then(url => {
+				$p.setAttribute('data-name', data.name);
+
+				let $img = document.createElement('img');
+
+				$img.src = url;
+				$p.appendChild($img);
+				$messagesContainer.appendChild($p);
+			})
+		} 
+		
+	}
+
+	fetch(`${giphyBasic}trending${giphyApiKey}`)
+	.then(res => res.json())
+	.then(res => {
+		let result = res.data.map(image => ({
+			id : image.id,
+			 url: image.images.fixed_height.url
+			}));
+
+		renderImages(result);
+	});
+
+	function renderImages(images) {
+		let fragment = document.createDocumentFragment();
+
+		images.forEach(image => {
+			let $img = document.createElement('img');
+
+			$img.src = image.url;
+			$img.setAttribute('data-image-id', image.id);
+
+			// $img.addEventListener('click', onSendImage);
+
+			fragment.appendChild($img);
 		});
+
+		$gifsContainer.appendChild(fragment);
 	}
 
-	document.getElementById("next").addEventListener("click", moveLeft);
-	document.getElementById("prev").addEventListener("click", moveRight);
+	function onSendImage(event) {
+		console.log(event.target);
+		if(event.target.nodeName !== 'IMG') return;
 
-	function sendImage() {
-		let imageId = this.data,
-		sender = login;
-		ws.emit("chat message", { sender, imageId, messageType: "image" });
-	}
-
-
-	function moveLeft() {
-		if(gifCounter === $gifsContainer.getElementsByTagName('span').length - 1) return;
-		$gifsContainer.getElementsByTagName('span')[gifCounter++].style.display = "none";
-	}
-
-	function moveRight() {
-		if(gifCounter === 0) return;
-		$gifsContainer.getElementsByTagName('span')[gifCounter--].style.display = "";
+		let $imageId = event.target.dataset.imageId,
+		message = `${giphyBasic}${$imageId}${giphyApiKey}`;
+		console.log($imageId);
+		ws.emit("chat message" , {name: sender, message, type: 'IMAGE'});
 	}
 
 })();
